@@ -9,19 +9,18 @@ JavaScript startup script.
 Urgent for test, namespace include:
 
 - `Console` for log to dev-console,
-- `console` for log to html (no input),
+- `console` for log to html (no input, `log` only),
 - 
 
 ## Tested
 
 Desktop:
 
-- [OK] IE-9
-- [OK] Edge
-- [OK] Safari-5, windows
-- [NO] Firefox, windows
+- [OK] IE_9
+- [OK] Safari_5, windows
+- [OK] Firefox_52, windows
 - [NO] Opera, windows
-- [NO] Chrome, windows
+- [OK] Chrome, windows
 
 Phone:
 
