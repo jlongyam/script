@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta id="meta_ie" http-equiv="x-ua-compatible" content="ie=edge">
+  <meta http-equiv="content-type" content="text/html">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>repetitve</title>
+  <script src="../../script.js"></script>
+</head>
+<body>
+  <script>
+    console.log(script.test({
+      name: 'Test: avoid repetitive load',
+      call: function() {
+        script.load('sample/other.js');
+        script.load('sample/other.js');
+        script.load('sample/other.js');
+        return document.scripts.length;
+      },
+      should: 4
+    }));
+    console.log("script.loaded:<br>-----<br>"+script.loaded.join('<br>'));
+  </script>
+</body>
+</html>

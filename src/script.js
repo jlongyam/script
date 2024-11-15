@@ -59,26 +59,38 @@
       actual: actual
     };
   }());
+  script.loaded = [];
   script.load = function(url, id) {
-    var
-      head = d.getElementsByTagName('head')[0],
-      file_type = url.split('.').pop(),
-      new_url = url,
-      base = script.path.base
-    ;
-    if(base.element) new_url = base.actual + url;
-    if(file_type === 'js') {
-      var new_script = d.createElement('script');
-      new_script.src = new_url;
-      //new_script.onload = function() { head.removeChild(new_script) }
-      head.appendChild(new_script);
-    }
-    if(file_type === 'css') {
-      var new_link = d.createElement('link');
-      new_link.rel = 'stylesheet';
-      if(id) new_link.id = id;
-      new_link.href = new_url;
-      head.insertBefore( new_link, d.scripts[0] );
+    var base = script.path.base;
+    if(base.element) url = base.actual + url;
+    var url_absolute = (function() {
+      var link = d.createElement('link');
+      link.disabled = 'disabled';
+      link.href = url
+      d.head.appendChild(link);
+      link.parentNode.removeChild(link);
+      return link.href
+    })();
+    if( script.loaded.indexOf(url_absolute) >= 0 ) return;
+    else {
+      script.loaded.push(url_absolute);
+      var
+        head = d.getElementsByTagName('head')[0],
+        file_type = url.split('.').pop()
+      ;
+      if(file_type === 'js') {
+        var new_script = d.createElement('script');
+        new_script.src = url;
+        //new_script.onload = function() { head.removeChild(new_script) }
+        head.appendChild(new_script);
+      }
+      if(file_type === 'css') {
+        var new_link = d.createElement('link');
+        new_link.rel = 'stylesheet';
+        if(id) new_link.id = id;
+        new_link.href = url;
+        head.insertBefore( new_link, d.scripts[0] );
+      }
     }
   };
   function script(args){
