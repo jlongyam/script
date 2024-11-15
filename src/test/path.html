@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta id="meta_ie" http-equiv="x-ua-compatible" content="ie=edge">
+  <meta http-equiv="content-type" content="text/html">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>path</title>
+  <base href="../">
+  <script src="script.js"></script>
+</head>
+<body>
+  <pre><b>Note: </b>&lt;base&gt; element not work in IE_7-9</pre>
+  <script>
+    var result = [
+      'script.path:',
+      '  file :'+script.path.file,
+      '  dir  :'+script.path.dir,
+      '  base :',
+      '    element  :'+script.path.base.element,
+      '    href     :'+script.path.base.href,
+      '    relative :'+script.path.base.relative,
+      '    rest     :'+script.path.base.rest,
+      '    actual   :'+script.path.base.actual
+    ]
+    document.write( '<pre>' + result.join('<br>') + '</pre>' );
+  </script>
+</body>
+</html>

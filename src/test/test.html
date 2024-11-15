@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta id="meta_ie" http-equiv="x-ua-compatible" content="ie=9">
+  <meta http-equiv="content-type" content="text/html">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>test</title>
+  <script src="../script.js"></script>
+</head>
+<body>
+  <script>
+    //[1]
+    var test_pass = script.test({
+      name: 'script.test should PASS',
+      call: function() {
+        return 9;
+      },
+      should: 9
+    });
+    document.write('<pre>'+test_pass+'</pre>');
+    //[2]
+    var test_fail = script.test({
+      name: 'script.test should FAIL',
+      call: function() {
+        return '';
+      },
+      should: 'Hello'
+    });
+    document.write('<pre>'+test_fail+'</pre>');
+    //[3]
+    var test_array = script.test({
+      name: 'script.test Array',
+      call: function() {
+        return [1,2,3];
+      },
+      should: [1,2,3]
+    });
+    document.write('<pre>'+test_array+'</pre>');
+    //[4]
+    var test_native = script.test({
+      name: 'script.test to native Object',
+      call: function() {
+        return [1,2,3];
+      },
+      should: [1,2,3]
+    }, true );
+    document.write('<pre>native object: '+test_native+'</pre>');
+  </script>
+</body>
+</html>

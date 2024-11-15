@@ -2,15 +2,7 @@
 
 # script
 
-JavaScript startup script.
-
-## Level 1
-
-Urgent for test, namespace include:
-
-- `Console` for log to dev-console,
-- `console` for log to html (no input, `log` only),
-- 
+JavaScript utility.
 
 ## Tested
 

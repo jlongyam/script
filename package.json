@@ -1,0 +1,22 @@
+{
+  "name": "script",
+  "version": "1.0.0",
+  "description": "script, manager, utility",
+  "main": "index.html",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "node test/test.io.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jlongyam/script.git"
+  },
+  "author": "jlongyam",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jlongyam/script/issues"
+  },
+  "homepage": "https://github.com/jlongyam/script#readme"
+}

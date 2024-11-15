@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <!--edge-->
+  <!--<meta id="meta_ie" http-equiv="x-ua-compatible" content="ie=9">-->
+  <meta http-equiv="content-type" content="text/html">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>stringify</title>
+  <script src="../../src/script.js"></script>
+</head>
+<body>
+  <script>
+    var arr = [
+      'one', 'two',
+      [0,'a',7],
+      { a: 'alpha', b: 'beta', c: [1,2,3], f: { foo: 'bar', ba: 'ssoo'} },
+      3, 4,
+      (function aah(){ return function(){} }()),
+      9
+    ];
+    var obj = {
+      one: 'ONE',
+      two: 'TWO',
+      three: 'THREE',
+      four: [1,2,3],
+      five: {
+        0: 'zero',
+        1: 'one',
+        2: 'two'
+      },
+      six: {
+        a: [1,2,0,3],
+        b: {
+          foo: 'bar',
+          baz: [0,'a','b',7]
+        }
+      }
+    };
+    //array['function'].args = [];
+    console.log(object.stringify(obj) )
+  </script>
+</body>
+</html>

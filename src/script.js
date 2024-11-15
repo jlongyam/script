@@ -1,100 +1,106 @@
-/*! script.js - v1.0.0 | https://github.com/jlongyam/script */
-
-function script(args){
-  if(args) var name = args.name, require = args.require;
-  if(name && ( name in window ) ) {
-    window.addEventListener('load', window[name], false)
-  }
-  if(require) {
-    function load(url) {
-      var d = document, head = d.getElementsByTagName('head')[0];
-      var file_type = url.split('.').pop(), new_url = url, base = script.path.base;
-      if(base.element) new_url = base.actual + url
-      if(file_type === 'js') {
-        var new_script = document.createElement('script');
-        new_script.src = new_url;
-        head.appendChild(new_script);
-        new_script.onload = function() {
-          //head.removeChild(el)
+// IE_9+, no less!
+;(function(w,d,c) {
+  if( typeof script === 'undefined' ) script = {};
+  script.test = function( option, to_object ) {
+    var
+      config = {
+        name: option.name || 'Test',
+        call: option.call ? option.call() : 0,
+        should: typeof option.should === 'boolean' ? option.should.toString() : option.should || '0'
+      },
+      result = {
+        test: config.name,
+        should: config.should,
+        pass: (config.should.toString() === config.call.toString())
+      }
+    ;
+    if( to_object ) return result;
+    else {
+      if( typeof JSON !== 'undefined' ) return JSON.stringify( result, 0, 2 );
+      else {
+        var s = '';
+        for( k in result ) s += k+': '+result[k]+'\n'
+        return s;
+      }
+    }
+  };
+  script.current = function() { return d.scripts[d.scripts.length-1] };
+  script.internal = script.current();
+  script.path = { file: script.internal.getAttribute('src') };
+  script.path.dir = script.path.file.replace('script.js','');
+  script.path.base = (function(){
+    var
+      element = (function() {
+        var base = d.getElementsByTagName('base')[0];
+        if(base) return base.getAttribute('href');
+        else return false;
+      }()),
+      href = location.href.replace('file://',''),
+      relative = (function() {
+        if(element) {
+          var
+            i_element = element.split('/').length,
+            a_href = href.split('/'), a_result = [],
+            i
+          ;
+          for( i = 0; i < a_href.length - i_element; i++ ) a_result.push(a_href[i]);
+          return a_result.join('/')+'/';
+        }
+        else return href;
+      }()),
+      rest = href.substring(relative.length),
+      actual = rest.substring(0,rest.lastIndexOf('/')+1)
+    ;
+    return {
+      element: element,
+      href: href,
+      relative: relative,
+      rest: rest,
+      actual: actual
+    };
+  }());
+  script.load = function(url, id) {
+    var
+      head = d.getElementsByTagName('head')[0],
+      file_type = url.split('.').pop(),
+      new_url = url,
+      base = script.path.base
+    ;
+    if(base.element) new_url = base.actual + url;
+    if(file_type === 'js') {
+      var new_script = d.createElement('script');
+      new_script.src = new_url;
+      //new_script.onload = function() { head.removeChild(new_script) }
+      head.appendChild(new_script);
+    }
+    if(file_type === 'css') {
+      var new_link = d.createElement('link');
+      new_link.rel = 'stylesheet';
+      if(id) new_link.id = id;
+      new_link.href = new_url;
+      head.insertBefore( new_link, d.scripts[0] );
+    }
+  };
+  function script(args){
+    if(args) var name = args.name, require = args.require;
+    if(name && (name in w) ) w.addEventListener( 'load', w[name], false );
+    if(require) {
+      var has_map = ( script.map !== undefined )
+      if(typeof require === 'string' ) {
+        if(has_map && (require in script.map) ) require = script.map[require]
+        script.load(require);
+      }
+      else {
+        for( i in require ) {
+          var url =  require[i];
+          if(has_map && (url in script.map) ) url = script.map[url];
+          script.load(url);
         }
       }
     }
-    if(typeof require === 'string' ) load(require)
-    else for( url in require ) load(require[url])
   }
-  
-}
-script.current = function() {
-  var d = document;
-  return d.currentScript || d.scripts[d.scripts.length-1];
-}
-script.internal = script.current()
-script.path = {}
-script.path.file = script.internal.getAttribute('src');
-script.path.dir = script.path.file.replace('script.js','');
-script.path.base = (function(){
-  var
-    element = (function() {
-      var base = document.getElementsByTagName('base')[0];
-      if(base) return base.getAttribute('href');
-      else return false;
-    }()),
-    href = location.href.replace('file://',''),
-    relative = (function() {
-      // IE-fix, alias: script.internal.baseURI.replace('file://',''),
-      if(element) {
-        var i_element = element.split('/').length;
-        var a_href = href.split('/'), a_result = [];
-        for(var i = 0; i < a_href.length - i_element; i++ ){
-          a_result.push(a_href[i])
-        }
-        return a_result.join('/')+'/';
-      }
-      else return href
-    }()),
-    rest = href.substring(relative.length),
-    actual = rest.substring(0,rest.lastIndexOf('/')+1),
-    file = href.split('/').pop()    
-  ;
-  return {
-    element: element,
-    href: href,
-    relative: relative,
-    rest: rest,
-    actual: actual,
-    file: file
-  }
-}())
-
-// == console == //
-
-if( 'console' in window ) var Console = console;
-var console = {};
-console.dev = false;
-console.input = false;
-console.setup = function() {
-  var d = document, head = d.getElementsByTagName('head')[0],url;
-  var console_box = d.createElement('div');
-  console_box.id = 'console_box';
-  d.body.appendChild(console_box);
-  var console_output = d.createElement('div');
-  console_output.id = 'console_output';
-  console_box.appendChild(console_output);
-  var console_link = d.createElement('link');
-  console_link.id = 'console_link';
-  console_link.rel = 'stylesheet';
-  console_link.href = script.path.dir + 'script.css';
-  head.insertBefore(console_link, d.scripts[0]);
-};
-
-// -- console.log -- //
-console.log = function(){
-  if( !( 'console_output' in window ) ) console.setup();
-  var line = document.createElement('div');
-  line.className = 'console log';
-  for( var i = 0; i < arguments.length; i ++ ) {
-    if( console.dev ) Console.log(arguments[i]);
-    line.innerHTML += arguments[i];
-  }
-  console_output.appendChild(line);
-}
+  w.script = script;
+  // debug
+  script.load(script.path.dir+'optional/console/console.css');
+  document.write('<script src="'+script.path.dir+'optional/console/console.js"><\/script>');
+}(window,document))

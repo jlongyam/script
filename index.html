@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=9">
+  <meta http-equiv="content-type" content="text/html">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Index</title>
+  <!--<script src="src/script.js"></script>-->
+</head>
+<body>
+  <p><a href="index.html">reset</a></p>
+  <hr>
+  <pre id=pre>&nbsp;</pre>
+  <hr>
+  <p><a href="#/foo">foo</a></p>
+  <p><a href="#/bar">bar</a></p>
+  <p><a href="#/bar/?/home/foo">bar/?/home/foo</a></p>
+  <p><a href="#/baz/bak">baz/bak</a></p>
+  <p><a href="#/baz/#/home/foo">baz/#/home/foo</a></p>
+  <p><a href="#/joker/bat">joker/bat</a></p>
+  <p><a href="#/baz/bak/more">baz/bak/more</a></p>
+  <script>
+    
+    function router() {
+      /*
+        a_map = [
+          [deep1],
+          [deep2]
+        ]
+      */
+      var s_base = location.hash.substring(location.hash.indexOf('/')+1);
+      var b_slash = [];
+      var a_tail = [];
+      var s_rest = [];
+   
+      var l = arguments.length;
+      
+      for( var i = 0; i < l; i++ ) {
+        if( i === 0 ) {
+          b_slash[0] = (s_base.indexOf('/') >= 0);
+          if(!b_slash[0]) {
+            a_tail[0] = s_base.substring(0);
+            s_rest[0] = '';
+          }
+          else {
+            a_tail[0] = s_base.substring(0,s_base.indexOf('/'));
+            s_rest[0] = s_base.substring(s_base.indexOf('/')+1)
+          }
+            
+        }
+        else {
+          var s_rest_i = parseInt(i<1)
+          b_slash[i] = (s_rest[(i-1)].indexOf('/') >= 0);
+          if(!b_slash[i]) {
+            a_tail[i] = s_rest[(i-1)].substring(0);
+            s_rest[i] = '';
+          }
+          else {
+            a_tail[i] = s_rest[(i-1)].substring(0,s_rest[(i-1)].indexOf('/'));
+            s_rest[i] = s_rest[(i-1)].substring(s_rest[(i-1)].indexOf('/')+1);
+          }
+          
+        }
+        if( typeof arguments[i] === 'function') {
+          arguments[i].call(false,a_tail[i],s_rest[i])
+        }
+      }
+      
+      //console.log(b_slash[0]);
+      //console.log(a_tail[0], a_tail[1]);
+      //console.log(s_rest[0]);
+
+      //pre.textContent = b_slash[1];
+      //pre.textContent = a_tail[1];
+      //pre.textContent = s_rest[1];
+    }
+    function cb1(arg,res) {
+      console.log('cb1: '+arg+', rest: ' +res)
+    }
+    function cb2(arg,res) {
+      console.log('cb2: '+arg+', rest: ' +res)
+    }
+    function cb3(arg,res) {
+      console.log('cb3: '+arg+', rest: ' +res)
+    }
+    if('onhashchange' in window) {
+      window.onhashchange = function() {
+        //return router()
+        //return router('arg1');
+        return router( cb1,cb2, cb3);
+      }
+    }
+    
+  </script>
+</body>
+</html>
