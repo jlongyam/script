@@ -10,20 +10,8 @@
   <script src="script.js"></script>
 </head>
 <body>
-  <pre><b>Note: </b>&lt;base&gt; element not work in IE_7-9</pre>
   <script>
-    var result = [
-      'script.path:',
-      '  file :'+script.path.file,
-      '  dir  :'+script.path.dir,
-      '  base :',
-      '    element  :'+script.path.base.element,
-      '    href     :'+script.path.base.href,
-      '    relative :'+script.path.base.relative,
-      '    rest     :'+script.path.base.rest,
-      '    actual   :'+script.path.base.actual
-    ]
-    document.write( '<pre>' + result.join('<br>') + '</pre>' );
+    console.log(JSON.stringify(script.path,0,2))
   </script>
 </body>
 </html>

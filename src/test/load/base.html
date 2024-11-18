@@ -10,26 +10,23 @@
   <script src="script.js"></script>
 </head>
 <body>
-  <pre><b>Note: </b>&lt;base&gt; element not supported in IE_7-9</pre>
   <script>
-    var test_load_js = script.test({
-      name: "script.load 'other.js' with 'base' element",
+    script.test({
+      name: "load 'other.js' with 'base' element",
       call: function() {
         script.load('sample/other.js');
         return document.scripts[1].getAttribute('src')    
       },
       should: 'test/load/sample/other.js'
     });
-    document.write('<pre>'+test_load_js+'</pre>');
-    var test_load_css = script.test({
-      name: "script.load 'pre.css'",
+    script.test({
+      name: "load 'pre.css'",
       call: function() {
         script.load('sample/pre.css');
         return document.getElementsByTagName('link')[0].getAttribute('href');
       },
       should: 'test/load/sample/pre.css'
-    })
-    document.write('<pre>'+test_load_css+'</pre>');
+    });
   </script>
 </body>
 </html>
