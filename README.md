@@ -2,7 +2,7 @@
 
 # script
 
-JavaScript utility.
+package manager.
 
 ## Tested
 
@@ -11,7 +11,7 @@ Desktop:
 - [OK] IE_9
 - [OK] Safari_5, windows
 - [OK] Firefox_52, windows
-- [NO] Opera, windows
+- [OK] Opera, windows
 - [OK] Chrome, windows
 
 Phone:

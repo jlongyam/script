@@ -1,14 +1,4 @@
-script({ name: 'object', require: [
-  'chain/forEach.js',
-  'chain/hasProperty.js',
-  'chain/createProperty.js',
-  'chain/renameProperty.js',
-  'chain/updateProperty.js',
-  'chain/deleteProperty.js',
-  'chain/createEvents.js',
-  'chain/addEventListener.js',
-  'keys.js'
-]});
+script({ name: 'object' });
 
 function object(args){
   if( typeof args !== 'object' ) return String(args);

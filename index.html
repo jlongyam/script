@@ -6,28 +6,20 @@
   <meta http-equiv="content-type" content="text/html">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Index</title>
+  <link href="favicon.ico" rel="shortcut icon" type="image/x-icon" sizes="16x16">
   <script src="src/script.js"></script>
 </head>
 <body>
+  <h3><a href="index.html">Index</a></h3>
   <dl>
-    <dt><h1><a href="index.html">Index</a></h1></dt>
+    <dt>Test</dt>
     <dd>
-      <li><a href="#/Home">Home</li>
-      <li><a href="#/Next/page">Next/page</li>
-      <li><a href="#/Other">Other</li>
+      <li><a href="src/test/import.html">import</a></li>
+    </dd>
+    <dt>Package</dt>
+    <dd>
+      <li><a href="src/package/console/test/console.html">console</a></li>
     </dd>
   </dl>
-  <div id="root"></div>
-  <script>
-    window.addEventListener('hashchange', function() {
-      return router(function(url, rest){
-        switch(url) {
-          case 'Home': root.innerHTML = 'HOME'; break;
-          case 'Next': root.innerHTML = 'Next'; break;
-          default: root.innerHTML = '404'; break;
-        }
-      })
-    }, false );
-  </script>
 </body>
 </html>

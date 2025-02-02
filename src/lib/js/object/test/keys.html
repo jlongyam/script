@@ -11,16 +11,24 @@
 </head>
 <body>
   <script>
-    script({ name: 'test', require: 'object.js' })
+    script({ name: 'test' })
 
     function test() {
+      
       script.test({
         name: "object.keys({one: 'ONE', two: 'TWO'})",
         call: function() {
           return object.keys({one: 'ONE', two: 'TWO'})
         },
         should: 'one,two'
-      })
+      });
+      script.test({
+        name: "object.keys([1,2,3])",
+        call: function() {
+          return object.keys([1,2,3])
+        },
+        should: '0,1,2'
+      });
       
     }
   </script>

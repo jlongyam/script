@@ -11,29 +11,29 @@
 </head>
 <body>
   <script>
-    script({ name: 'test', require: 'object.js' })
+    script({ name: 'test' })
 
     function test() {
       var o_simple = { one: 'ONE', two: 'TWO' };
       console.log(JSON.stringify(o_simple));
       //[1]
-      object(o_simple).createEvents();
-      //[create]
-      object(o_simple).addEventListener('create', function(s_key, s_val){
-        console.info('create: "'+s_key+'", value: "'+s_val+'"');
+      object.createEvents(o_simple);
+      //[add]
+      object(o_simple).addEventListener('add', function(s_key, s_val){
+        console.info('add: "'+s_key+'", value: "'+s_val+'"');
       });
-      object(o_simple).createProperty('three','THREE');
-      object(o_simple).createProperty('four','FOUR');
-      object(o_simple).addEventListener('create', function(s_key, s_val){
-        console.info('other create: "'+s_key+'", with value: "'+s_val+'"');
+      object(o_simple).addProperty('three','THREE');
+      object(o_simple).addProperty('four','FOUR');
+      object(o_simple).addEventListener('add', function(s_key, s_val){
+        console.info('other add: "'+s_key+'", with value: "'+s_val+'"');
       });
-      object(o_simple).createProperty('five','FIVE');
-      function createListener(s_key, s_val) {
-        console.info('from function, create: "'+s_key+'", value: "'+s_val+'"')
+      object(o_simple).addProperty('five','FIVE');
+      function addListener(s_key, s_val) {
+        console.info('from function, add: "'+s_key+'", value: "'+s_val+'"')
       }
-      object(o_simple).addEventListener('create', createListener);
-      object(o_simple).createProperty('six','SIX');
-      object(o_simple).createProperty('seven','SEVEN');
+      object(o_simple).addEventListener('add', addListener);
+      object(o_simple).addProperty('six','SIX');
+      object(o_simple).addProperty('seven','SEVEN');
       console.log(JSON.stringify(o_simple,0,2));
       //[rename]
       object(o_simple).addEventListener('rename', function(s_from,s_to){
@@ -70,20 +70,20 @@
       object(o_simple).updateProperty('zero','ZERO');
       object(o_simple).updateProperty('eight','EIGHT');
       console.log(JSON.stringify(o_simple,0,2));
-      //[delete]
-      object(o_simple).addEventListener('delete', function(s_key){
-        console.info('deteled key: "'+s_key);
+      //[remove]
+      object(o_simple).addEventListener('remove', function(s_key){
+        console.info('removed key: "'+s_key);
       });
-      object(o_simple).deleteProperty('one');
-      object(o_simple).addEventListener('delete', function(s_key){
-        console.info('other deteled key: "'+s_key);
+      object(o_simple).removeProperty('one');
+      object(o_simple).addEventListener('remove', function(s_key){
+        console.info('other removed key: "'+s_key);
       });
-      object(o_simple).deleteProperty('eleven');
-      function deleteListener(s_key) {
-        console.info('from function, deteled key: "'+s_key);
+      object(o_simple).removeProperty('eleven');
+      function removeListener(s_key) {
+        console.info('from function, removed key: "'+s_key);
       }
-      object(o_simple).addEventListener('delete', deleteListener);
-      object(o_simple).deleteProperty('seven');
+      object(o_simple).addEventListener('remove', removeListener);
+      object(o_simple).removeProperty('seven');
       console.log(JSON.stringify(o_simple,0,2));
       Console.log(o_simple);
     }

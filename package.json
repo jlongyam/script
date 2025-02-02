@@ -1,10 +1,10 @@
 {
   "name": "script",
   "version": "1.0.0",
-  "description": "script, manager, utility",
+  "description": "script, packager, utility, module, manager",
   "main": "index.html",
   "directories": {
-    "test": "test"
+    "src": "src"
   },
   "scripts": {
     "test": "echo NO"
