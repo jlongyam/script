@@ -1,0 +1,25 @@
+{
+  "name": "@jlongyam/script",
+  "version": "0.1.0",
+  "description": "NO_DESCRIPTION_YET",
+  "keywords": [
+    "NO",
+    "KEY",
+    "WORDS"
+  ],
+  "homepage": "https://github.com/jlongyam/script#readme",
+  "bugs": {
+    "url": "https://github.com/jlongyam/script/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jlongyam/script.git"
+  },
+  "license": "MIT",
+  "author": "jlongyam",
+  "type": "commonjs",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo NO_TEST_YET"
+  }
+}
