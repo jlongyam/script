@@ -33,13 +33,13 @@
       clearInterval(waiting);
     }, 500);
   };
-  fn.display = function(input) {
-    if(fn.env.node) console.log(input);
-    if(fn.env.browser) {
+  fn.display = function (input) {
+    if (fn.env.node) console.log(input);
+    if (fn.env.browser) {
       var pre = document.createElement('pre');
       pre.innerHTML = input;
-      fn.when(function() {
-        if('body' in document) {
+      fn.when(function () {
+        if ('body' in document) {
           parent = document.getElementById('display') || document.body
           parent.appendChild(pre)
         }
@@ -143,6 +143,7 @@
       setTimeout(resolve, ms);
     });
   };
+  // not used
   fn.yield = function () {
     var tasks = [];
     return {
@@ -161,11 +162,22 @@
       }
     }
   };
-  fn.async = function(generatorFunc) {
-    return function() {
+  fn.async = function (generatorFunc) {
+    return function () {
       var args = arguments;
-      return new fn.promise(function(resolve, reject) {
-        var generator = generatorFunc.apply(this, args);
+      return new fn.promise(function (resolve, reject) {
+        if (typeof generatorFunc !== 'function') {
+          return reject(new Error('Async must wrap a generator function'))
+        }
+        var generator;
+        try {
+          generator = generatorFunc.apply(this, args);
+          if (!generator || typeof generator.next !== 'function') {
+            throw new Error('Argument must be a generator function')
+          }
+        } catch (e) {
+          return reject(e)
+        }
         function step(nextFn) {
           try {
             var result = nextFn();
@@ -177,23 +189,73 @@
               value = fn.promise.resolve(value);
             }
             value.then(
-              function(v) { step(function() { return generator.next(v); }); },
-              function(e) { step(function() { return generator.throw(e); }); }
+              function (v) { step(function () { return generator.next(v); }); },
+              function (e) { step(function () { return generator.throw(e); }); }
             );
           } catch (e) {
             reject(e);
-          } 
+          }
         }
-        step(function() { return generator.next(); })
+        step(function () { return generator.next(); })
       })
     }
   };
-  fn.await = function(promise) {
+  fn.await = function (promise) {
     return {
-      then: function(onFulfilled, onRejected) {
-        return promise.then(onFulfilled, onRejected)
+      then: function (onFulfilled, onRejected) {
+        return promise.then(
+          onFulfilled,
+          function (e) {
+            return onRejected ? onRejected(e) : fn.promise.reject(e)
+          }
+        )
       }
     }
+  };
+  fn.fetch = function(url, options) {
+    return new fn.promise(function(resolve, reject) {
+      var xhr = new XMLHttpRequest();
+      var method = (options && options.method) || "GET";
+      var headers = (options && options.headers) || {};
+      var body = (options && options.body) || null;
+      xhr.open(method, url, true);
+      for (var key in headers) {
+        if (headers.hasOwnProperty(key)) {
+          xhr.setRequestHeader(key, headers[key])
+        }
+      }
+      xhr.onload = function() {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          resolve({
+            ok: true,
+            status: xhr.status,
+            statusText: xhr.statusText,
+            text: function() { return fn.promise.resolve(xhr.responseText) },
+            json: function() { 
+              try {
+                return fn.promise.resolve(JSON.parse(xhr.responseText))
+              } catch (e) {
+                return fn.promise.reject(e)
+              }
+            }
+          })
+        } else {
+          reject({
+            ok: false,
+            status: xhr.status,
+            statusText: xhr.statusText
+          })
+        }
+      };
+      xhr.onerror = function() {
+        reject({
+          ok: false,
+          status: xhr.status,
+          statusText: "Network Error"
+        })
+      };
+      xhr.send(body)
+    })
   };
   // Initial
   fn.global.script = fn;
