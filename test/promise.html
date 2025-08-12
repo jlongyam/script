@@ -16,22 +16,47 @@
   </h1>
   <script>
     var pre = document.getElementById('pre');
-    var asyncOperation = new script.promise(function (resolve, reject) {
+
+    new script.promise(function (resolve) {
+      pre.innerHTML += "<h3>Waterfall</h3>";
       setTimeout(function () {
-        if (Math.random() > 0.5) {
-          resolve("Success!");
-        } else {
-          reject("Failed!");
-        }
+        pre.innerHTML += "[1] First task (async)<br>";
+        resolve(10);
       }, 1000);
-    });
-    asyncOperation
+    })
       .then(function (result) {
-        pre.innerHTML = 'promise: '+result
+        pre.innerHTML += "[2] Got:" + result + "<br>";
+        return new script.promise(function (resolve) {
+          setTimeout(function () {
+            pre.innerHTML += "[2.1] Second task (async)<br>";
+            resolve(result * 2);
+          }, 500);
+        });
+      })
+      .then(function (result) {
+        pre.innerHTML += "[3] Got:" + result + "<br>";
+        return result + 5;
+      })
+      .then(function (result) {
+        pre.innerHTML += "[4] Final result:" + result + "<br>";
       })
       .catch(function (error) {
-        pre.innerHTML = 'promise: '+error.message
+        pre.innerHTML += "Waterfall failed:" + error + "<br>";
+      });
+
+    script.promise.delay(2000)
+      .then(function () {
+        pre.innerHTML += "<h3>Delay</h3>";
       })
+      .then(function () {
+        pre.innerHTML += "Delay After 2 second<br>"
+      })
+      .then(function() {
+        pre.innerHTML += "Next after delay<br>"
+      })
+      .catch(function (error) {
+        pre.innerHTML += "Delay failed:" + error + "<br>";
+      });
   </script>
 </body>
 

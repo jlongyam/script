@@ -16,3 +16,4 @@ There 2 main API section of `script`:
 - `script.env`
 - `script.when`
 - `script.promise`
+- `script.yield`

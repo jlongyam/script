@@ -7,10 +7,9 @@
     "KEY",
     "WORDS"
   ],
-  "homepage": "https://github.com/jlongyam/script#readme",
+  "homepage": "https://github.com/jlongyam/script",
   "bugs": {
-    "url": "https://github.com/jlongyam/script/issues"
-  },
+    "url": "https://github.com/jlongyam/script/issues" },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jlongyam/script.git"
