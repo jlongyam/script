@@ -8,20 +8,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>test: when</title>
   <script src="../src/script.js"></script>
-  <script>
-    script.when(function () {
-      console.log('searching ...')
-      if ('body' in document) {
-        var pre = document.getElementById('pre');
-        pre.innerHTML = 'pre is available';
-      }
-    })
-  </script>
+  <script src="./when.js"></script>
 </head>
 
 <body>
   <h1>
-    <pre id="pre"></pre>
+    <pre id="display"></pre>
   </h1>
 </body>
 

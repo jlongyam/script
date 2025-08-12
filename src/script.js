@@ -33,24 +33,35 @@
       clearInterval(waiting);
     }, 500);
   };
+  fn.display = function(input) {
+    if(fn.env.node) console.log(input);
+    if(fn.env.browser) {
+      var pre = document.createElement('pre');
+      pre.innerHTML = input;
+      fn.when(function() {
+        if('body' in document) {
+          parent = document.getElementById('display') || document.body
+          parent.appendChild(pre)
+        }
+      })
+    }
+  };
   fn.promise = function (executor) {
     var callbacks = [];
     var resolved = false;
     var result;
     var error;
-
     function resolve(value) {
       if (!resolved) {
-        // Handle promise return values
         if (value && typeof value.then === 'function') {
           value.then(resolve, reject);
-          return;
+          return
         }
         resolved = true;
         result = value;
         callbacks.forEach(function (cb) {
-          cb.onSuccess(value);
-        });
+          cb.onSuccess(value)
+        })
       }
     }
 
@@ -63,7 +74,6 @@
         });
       }
     }
-
     this.then = function (onSuccess, onFailure) {
       return new fn.promise(function (resolve, reject) {
         function handle() {
@@ -71,41 +81,34 @@
             var callback = error ? onFailure : onSuccess;
             if (typeof callback === 'function') {
               var nextValue = callback(error || result);
-              resolve(nextValue);
+              resolve(nextValue)
             } else if (error) {
-              reject(error);
+              reject(error)
             } else {
-              resolve(result);
+              resolve(result)
             }
-          } catch (e) {
-            reject(e);
-          }
+          } catch (e) { reject(e) }
         }
-
         if (resolved) {
-          setTimeout(handle, 0); // Ensure async
+          setTimeout(handle, 0)
         } else {
           callbacks.push({
             onSuccess: function (value) {
-              setTimeout(function () { handle(); }, 0);
+              setTimeout(function () { handle(); }, 0)
             },
             onFailure: function (reason) {
-              setTimeout(function () { handle(); }, 0);
+              setTimeout(function () { handle(); }, 0)
             }
           });
         }
-      });
+      })
     };
-
     this.catch = function (onFailure) {
-      return this.then(null, onFailure);
+      return this.then(null, onFailure)
     };
-
     try {
-      executor(resolve, reject);
-    } catch (e) {
-      reject(e);
-    }
+      executor(resolve, reject)
+    } catch (e) { reject(e) }
   };
   fn.promise.resolve = function (value) {
     return new fn.promise(function (resolve) {
@@ -155,6 +158,40 @@
             this.run()
           }.bind(this), 0)
         }
+      }
+    }
+  };
+  fn.async = function(generatorFunc) {
+    return function() {
+      var args = arguments;
+      return new fn.promise(function(resolve, reject) {
+        var generator = generatorFunc.apply(this, args);
+        function step(nextFn) {
+          try {
+            var result = nextFn();
+            if (result.done) {
+              return resolve(result.value);
+            }
+            var value = result.value;
+            if (!(value && typeof value.then === 'function')) {
+              value = fn.promise.resolve(value);
+            }
+            value.then(
+              function(v) { step(function() { return generator.next(v); }); },
+              function(e) { step(function() { return generator.throw(e); }); }
+            );
+          } catch (e) {
+            reject(e);
+          } 
+        }
+        step(function() { return generator.next(); })
+      })
+    }
+  };
+  fn.await = function(promise) {
+    return {
+      then: function(onFulfilled, onRejected) {
+        return promise.then(onFulfilled, onRejected)
       }
     }
   };
