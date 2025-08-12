@@ -143,24 +143,23 @@
       setTimeout(resolve, ms);
     });
   };
-  // not used
   fn.yield = function () {
     var tasks = [];
-    return {
+    var yieldInstance = {
       add: function (task) {
         tasks.push(task);
-        return this
+        return yieldInstance
       },
       run: function () {
         if (tasks.length > 0) {
           var task = tasks.shift();
           setTimeout(function () {
-            task();
-            this.run()
-          }.bind(this), 0)
+            task.call({ yield: yieldInstance })
+          }, 0)
         }
       }
-    }
+    };
+    return yieldInstance
   };
   fn.async = function (generatorFunc) {
     return function () {
@@ -212,50 +211,69 @@
       }
     }
   };
-  fn.fetch = function(url, options) {
-    return new fn.promise(function(resolve, reject) {
-      var xhr = new XMLHttpRequest();
-      var method = (options && options.method) || "GET";
-      var headers = (options && options.headers) || {};
-      var body = (options && options.body) || null;
-      xhr.open(method, url, true);
-      for (var key in headers) {
-        if (headers.hasOwnProperty(key)) {
-          xhr.setRequestHeader(key, headers[key])
-        }
+  fn.fetch = function (url, options) {
+    return new fn.promise(function (resolve, reject) {
+      if (fn.env.node) {
+        var https = require('https');
+        var req = https.request(url, options || {}, function (res) {
+          var data = [];
+          res.on('data', chunk => data.push(chunk));
+          res.on('end', () => {
+            var response = {
+              ok: res.statusCode >= 200 && res.statusCode < 300,
+              status: res.statusCode,
+              statusText: res.statusMessage,
+              text: function () { return fn.promise.resolve(Buffer.concat(data).toString()); },
+              json: function () {
+                try {
+                  return fn.promise.resolve(JSON.parse(Buffer.concat(data).toString()));
+                } catch (e) {
+                  return fn.promise.reject(e);
+                }
+              }
+            };
+            resolve(response);
+          });
+        });
+        req.on('error', reject);
+        if (options && options.body) req.write(options.body);
+        req.end();
       }
-      xhr.onload = function() {
-        if (xhr.status >= 200 && xhr.status < 300) {
+      else if (fn.env.browser) {
+        var xhr = new XMLHttpRequest();
+        var method = (options && options.method) || "GET";
+        xhr.open(method, url, true);
+
+        if (options && options.headers) {
+          for (var key in options.headers) {
+            xhr.setRequestHeader(key, options.headers[key]);
+          }
+        }
+
+        xhr.onload = function () {
           resolve({
-            ok: true,
+            ok: xhr.status >= 200 && xhr.status < 300,
             status: xhr.status,
             statusText: xhr.statusText,
-            text: function() { return fn.promise.resolve(xhr.responseText) },
-            json: function() { 
+            text: function () { return fn.promise.resolve(xhr.responseText); },
+            json: function () {
               try {
-                return fn.promise.resolve(JSON.parse(xhr.responseText))
+                return fn.promise.resolve(JSON.parse(xhr.responseText));
               } catch (e) {
-                return fn.promise.reject(e)
+                return fn.promise.reject(e);
               }
             }
-          })
-        } else {
-          reject({
-            ok: false,
-            status: xhr.status,
-            statusText: xhr.statusText
-          })
-        }
-      };
-      xhr.onerror = function() {
-        reject({
-          ok: false,
-          status: xhr.status,
-          statusText: "Network Error"
-        })
-      };
-      xhr.send(body)
-    })
+          });
+        };
+        xhr.onerror = function () {
+          reject(new Error('Network error'));
+        };
+        xhr.send(options && options.body);
+      }
+      else {
+        reject(new Error('Unsupported environment'));
+      }
+    });
   };
   // Initial
   fn.global.script = fn;
