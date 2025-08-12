@@ -17,3 +17,6 @@ There 2 main API section of `script`:
 - `script.when`
 - `script.promise`
 - `script.yield`
+- `script.async`
+- `script.await`
+- `script.fecth`
