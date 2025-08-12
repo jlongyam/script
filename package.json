@@ -18,7 +18,7 @@
   "license": "MIT",
   "author": "jlongyam",
   "type": "commonjs",
-  "main": "script.js",
+  "main": "./src/script.js",
   "scripts": {
     "test": "echo NO_TEST_YET"
   }
