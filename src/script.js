@@ -275,6 +275,52 @@
       }
     });
   };
+  fn.proxy = function (target, handler) {
+    var proxy = {};
+    for (var key in target) {
+      if (typeof target[key] === 'function') {
+        proxy[key] = (function (method) {
+          return function () {
+            if (handler.get) {
+              var getResult = handler.get(target, method, proxy);
+              if (getResult !== undefined) return getResult
+            }
+            var result = target[method].apply(target, arguments);
+            if (handler.apply) {
+              var applyResult = handler.apply(target, method, arguments, result, proxy);
+              if (applyResult !== undefined) return applyResult
+            }
+            return result
+          }
+        })(key)
+      } else {
+        Object.defineProperty(proxy, key, {
+          get: function () {
+            if (handler.get) {
+              var getResult = handler.get(target, key, proxy);
+              if (getResult !== undefined) return getResult
+            }
+            return target[key]
+          },
+          set: function (value) {
+            if (handler.set) {
+              var setResult = handler.set(target, key, value, proxy);
+              if (setResult !== undefined) return setResult
+            }
+            target[key] = value;
+            return true
+          }
+        })
+      }
+    }
+    proxy.call = function () {
+      if (handler.call) {
+        return handler.call(target, arguments, proxy)
+      }
+      return target.apply(null, arguments)
+    };
+    return proxy
+  };
   // Initial
   fn.global.script = fn;
   // Internal
