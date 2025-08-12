@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Type" content="text/html">
+  <meta http-equiv="X-UA-Compatible" content="IE=9">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>test: when</title>
+  <script src="../src/script.js"></script>
+</head>
+
+<body>
+  <h1>
+    <pre id="pre"></pre>
+  </h1>
+  <script>
+    var pre = document.getElementById('pre');
+    var asyncOperation = new script.promise(function (resolve, reject) {
+      setTimeout(function () {
+        if (Math.random() > 0.5) {
+          resolve("Success!");
+        } else {
+          reject("Failed!");
+        }
+      }, 1000);
+    });
+    asyncOperation
+      .then(function (result) {
+        pre.innerHTML = 'promise: '+result
+      })
+      .catch(function (error) {
+        pre.innerHTML = 'promise: '+error.message
+      })
+  </script>
+</body>
+
+</html>

@@ -136,5 +136,5 @@
   // Initial
   fn.global.script = fn;
   // Internal
-  console.log(script());
+  //console.log(script());
 })();
