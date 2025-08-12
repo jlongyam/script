@@ -20,3 +20,4 @@ There 2 main API section of `script`:
 - `script.async`
 - `script.await`
 - `script.fecth`
+- `script.proxy`

@@ -1,5 +1,6 @@
 if (typeof global === 'object') require('../src/script.js');
 
+// basic
 var original = { count: 0 };
 var proxied = script.proxy(original, {
   get: function(target, prop) {
@@ -15,3 +16,25 @@ var proxied = script.proxy(original, {
 
 proxied.count;
 proxied.count = 5;
+
+// chaining
+/*
+var originalScript = fn;
+fn = script.proxy(fn, {
+  call: function(target, args) {
+    if (args.length === 0) return originalScript();
+    // Handle module cases
+    if (args[0].import || args[0].export) {
+      // Module logic will go here later
+      return target.apply(this, args);
+    }
+    return target.apply(this, args);
+  },
+  get: function(target, prop) {
+    // Preserve existing properties
+    if (prop in target) return target[prop];
+    // Allow chaining
+    return target;
+  }
+});
+*/
